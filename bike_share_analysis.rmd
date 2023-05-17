@@ -2,7 +2,9 @@
 title: "Bike Share Analysis"
 author: "Aly"
 date: "2023-05-17"
-output: html_document
+output: 
+  html_document: 
+    keep_md: yes
 ---
 
 ```{r setup, include=FALSE}
