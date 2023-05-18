@@ -586,4 +586,4 @@ mapview(top_round, map.types = c("OpenStreetMap.DE"), xcol = "start_lng",
 
 1. Share findings and data visualizations.  
   
-You may find my [pdf presentation](https://github.com/alykea/Bike_Share_Analysis/blob/main/Bike_Share_Analysis.pdf). Or you can click on the file "Bike_Share_Analysis.pdf" in my repo on GitHub.
+You may find my [pdf presentation](https://github.com/alykea/Bike_Share_Analysis/blob/main/bike_share_analysis_files/Bike_Share_Analysis.pdf). Or you can click on the file "bike_share_analysis_files" in my repo on GitHub.
