@@ -1,0 +1,22 @@
+#Changelog
+This file contains the notable changes to the project.
+
+2023-05-10
+
+##New
+	- Merged 12 datasets into 1
+	- Added ride length column
+	- Added date column
+	- Added month column
+	- Added day column
+	- Added year column
+	- Added day of week column
+	- Added hour column
+
+##Changes
+	- Removal of NULL values
+	- Removal of test rides
+	- Removal of negative duration rides
+	- Removal of longer than 24 hour rides
+	- Removal of mistake rides (less than 2 mins with same start and end station)
+
