@@ -6,6 +6,7 @@ output:
   html_document:
     toc: true
     number_sections: true
+    keep_md: true
 ---
 
 
@@ -115,6 +116,8 @@ c202304 <- read_csv("202304-divvy-tripdata.csv")
 **Tools:** RStudio was used for data preparation and analysis due to the large amount of data. RMarkdown was used to generate a high quality report.  
 
 **Data Errors:** To ensure data integrity, I used a changelog to document the cleaning process to eliminate human errors including filtering out negative, too short, or too long ride durations, checking for inconsistencies across all formats so that all data gets aggregated appropriately, and using 12 months worth of data to ensure the data collected is not lacking information and to prevent bias.  
+
+**Changelog:** I have saved my changelog as a text file and can be accessed [here](https://github.com/alykea/Bike_Share_Analysis/blob/main/bike_share_analysis_changelog.txt).
 
 **Merge the data:**  
 ```{r}
