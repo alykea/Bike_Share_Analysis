@@ -15,14 +15,21 @@ output:
 **Case - How to optimize the amount of annual memberships?**
 
 I used historical data from a bike-share company located in Chicago, IL, USA to *analyze how casual riders and annual members use bikes differently*. Annual members are more profitable than casual riders, so the goal is to maximize the number of annual members for future company growth.  
-
   
+**Deliverables:**
+
+1. A clear statement of the business task
+2. A description of all data sources used
+3. Documentation of any cleaning or manipulation of data
+4. A summary of your analysis
+5. Supporting visualizations and key findings
+6. Your top recommendations based on your analysis
   
 ### **ASK**  
   
 **Key Task:**  
 
-1. Business task: **analyze the different ways riders use the bike-share service to identify historical trends and convert casual riders into annual members in order to grow the company.**  
+1. Business task: **analyze the different ways riders use the bike-share service to identify historical trends and convert casual riders into annual members.**  
   
   
 ### **PREPARE**  
@@ -74,7 +81,7 @@ I used historical data from a bike-share company located in Chicago, IL, USA to 
 * Before cleaning: **5.9 million rows**  
 * Eliminated ~1.5 million rows of bad data (approximately 26% of the raw data set).  
 * Ensured approximately the same ratio of member to casual rides in the clean data set as the raw data set (approximately 67.4% in raw data and 65.4% in clean data for casual to member ratio) to minimize bias.  
-* After cleaning: **4.4 million rows**
+* After cleaning: **4.4 million rows**  
 
 **Load the following packages:**
 ```{r}
@@ -117,7 +124,7 @@ c202304 <- read_csv("202304-divvy-tripdata.csv")
 
 **Data Errors:** To ensure data integrity, I used a changelog to document the cleaning process to eliminate human errors including filtering out negative, too short, or too long ride durations, checking for inconsistencies across all formats so that all data gets aggregated appropriately, and using 12 months worth of data to ensure the data collected is not lacking information and to prevent bias.  
 
-**Changelog:** I have saved my changelog as a text file and can be accessed [here](https://github.com/alykea/Bike_Share_Analysis/blob/main/bike_share_analysis_changelog.txt).
+**Changelog:** I have saved my changelog as a text file and can be accessed [here](https://github.com/alykea/Bike_Share_Analysis/blob/main/bike_share_analysis_changelog.txt).  
 
 **Merge the data:**  
 ```{r}
