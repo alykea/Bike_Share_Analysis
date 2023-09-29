@@ -3,6 +3,7 @@ library(tidyverse)
 library(skimr)
 library(janitor)
 library(mapview)
+library(writexl)
 
 # upload data
 c202205 <- read_csv("202205-divvy-tripdata.csv")
@@ -22,6 +23,20 @@ c202304 <- read_csv("202304-divvy-tripdata.csv")
 
 # combining rows of all datasets
 Annual_bike_sales <- bind_rows(c202205,c202206,c202207,c202208,c202209,c202210,c202211,c202212,c202301,c202302,c202303,c202304)
+
+# remove multiple df
+rm(c202205)
+rm(c202206)
+rm(c202207)
+rm(c202208)
+rm(c202209)
+rm(c202210)
+rm(c202211)
+rm(c202212)
+rm(c202301)
+rm(c202302)
+rm(c202303)
+rm(c202304)
 
 # cleaning data - remove NULL values
 Annual_bike_sales_clean <- na.omit(Annual_bike_sales)
@@ -78,8 +93,8 @@ day_of_week_rides <- Annual_bike_sales_clean %>%
   summarise(number_of_rides = n(), average_duration = mean(ride_length)) %>%
   arrange(member_casual, weekday)
 
-# create CSV
-write.csv(day_of_week_rides,"day_of_week_rides.csv")
+# create XLSX
+write_xlsx(day_of_week_rides,"day_of_week_rides.xlsx")
 
 # remove df
 rm(day_of_week_rides)
@@ -92,8 +107,8 @@ monthly_rides_by_ridertype <- Annual_bike_sales_clean %>%
   arrange(desc(n)) %>%
   print(n=24)
 
-# create CSV
-write.csv(monthly_rides_by_ridertype,"monthly_rides_by_ridertype.csv")
+# create XLSX
+write_xlsx(monthly_rides_by_ridertype,"monthly_rides_by_ridertype.xlsx")
 
 # remove df
 rm(monthly_rides_by_ridertype)
@@ -106,8 +121,8 @@ hourly_rides_by_ridertype <- Annual_bike_sales_clean %>%
   arrange(desc(n)) %>%
   print(n=48)
 
-# create CSV
-write.csv(hourly_rides_by_ridertype,"hourly_rides_by_ridertype.csv")
+# create XLSX
+write_xlsx(hourly_rides_by_ridertype,"hourly_rides_by_ridertype.xlsx")
 
 # remove df
 rm(hourly_rides_by_ridertype)
@@ -119,8 +134,8 @@ rideable_type <- Annual_bike_sales_clean %>%
   distinct(rideable_type, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
   arrange(desc(n))
 
-# create CSV
-write.csv(rideable_type,"rideable_type.csv")
+# create XLSX
+write_xlsx(rideable_type,"rideable_type.xlsx")
 
 # remove df
 rm(rideable_type)
@@ -147,8 +162,8 @@ top_start_casual <- Annual_bike_sales_clean %>%
 top_start <- bind_rows(top_start_member, top_start_casual) %>%
   arrange(desc(n))
 
-# create CSV
-write.csv(top_start,"top_start.csv")
+# create XLSX
+write_xlsx(top_start,"top_start.xlsx")
 
 # remove df
 rm(top_start_member)
@@ -181,8 +196,8 @@ top_end_casual <- Annual_bike_sales_clean %>%
 top_end <- bind_rows(top_end_member, top_end_casual) %>%
   arrange(desc(n))
 
-# create CSV
-write.csv(top_end,"top_end.csv")
+# create XLSX
+write_xlsx(top_end,"top_end.xlsx")
 
 # remove df
 rm(top_end_member)
@@ -217,8 +232,8 @@ top_round_casual <- Annual_bike_sales_clean %>%
 top_round <- bind_rows(top_round_member, top_round_casual) %>%
   arrange(desc(n))
 
-# create CSV
-write.csv(top_round,"top_round.csv")
+# create XLSX
+write_xlsx(top_round,"top_round.xlsx")
 
 # remove df
 rm(top_round_member)
@@ -230,4 +245,5 @@ rm(top_round_casual)
 rm(top_round)
 
 # remove main df
+rm(Annual_bike_sales)
 rm(Annual_bike_sales_clean)
