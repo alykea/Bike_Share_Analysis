@@ -1,0 +1,233 @@
+# loading libraries
+library(tidyverse)
+library(skimr)
+library(janitor)
+library(mapview)
+
+# upload data
+c202205 <- read_csv("202205-divvy-tripdata.csv")
+c202206 <- read_csv("202206-divvy-tripdata.csv")
+c202207 <- read_csv("202207-divvy-tripdata.csv")
+c202208 <- read_csv("202208-divvy-tripdata.csv")
+c202209 <- read_csv("202209-divvy-tripdata.csv")
+c202210 <- read_csv("202210-divvy-tripdata.csv")
+c202211 <- read_csv("202211-divvy-tripdata.csv")
+c202212 <- read_csv("202212-divvy-tripdata.csv")
+c202301 <- read_csv("202301-divvy-tripdata.csv")
+c202302 <- read_csv("202302-divvy-tripdata.csv")
+c202303 <- read_csv("202303-divvy-tripdata.csv")
+c202304 <- read_csv("202304-divvy-tripdata.csv")
+
+#----PROCESS----
+
+# combining rows of all datasets
+Annual_bike_sales <- bind_rows(c202205,c202206,c202207,c202208,c202209,c202210,c202211,c202212,c202301,c202302,c202303,c202304)
+
+# cleaning data - remove NULL values
+Annual_bike_sales_clean <- na.omit(Annual_bike_sales)
+
+# filter out test rides in start station names
+Annual_bike_sales_clean <- Annual_bike_sales_clean %>% 
+  filter(!grepl('Base', start_station_name))
+
+# filter out test rides in end station names
+Annual_bike_sales_clean <- Annual_bike_sales_clean %>% 
+  filter(!grepl('Base', end_station_name))
+
+# Adding ride_length
+Annual_bike_sales_clean <- Annual_bike_sales_clean %>%
+  mutate(ride_length = difftime(ended_at, started_at,units = "mins"))
+
+# adding date column
+Annual_bike_sales_clean$date <- as.Date(Annual_bike_sales_clean$started_at)
+
+# adding month column
+Annual_bike_sales_clean$month <- format(as.Date(Annual_bike_sales_clean$date), "%m")
+
+# adding day column
+Annual_bike_sales_clean$day <- format(as.Date(Annual_bike_sales_clean$date), "%d")
+
+# adding year column
+Annual_bike_sales_clean$year <- format(as.Date(Annual_bike_sales_clean$date), "%Y")
+
+# adding day of week column
+Annual_bike_sales_clean$day_of_week <- format(as.Date(Annual_bike_sales_clean$date), "%A")
+
+# adding hour column
+Annual_bike_sales_clean$hour <- format(as.POSIXct(Annual_bike_sales_clean$started_at), "%H")
+
+# filter out negative, <1min, and >24hr rides
+Annual_bike_sales_clean <- Annual_bike_sales_clean %>% filter(ride_length < 1440, ride_length > 1)
+
+# filter only rides with same start and end stations where rides are less than 2mins
+same_start_and_end <- Annual_bike_sales_clean %>%
+  filter(start_station_name==end_station_name, ride_length < 2) %>%
+  arrange(desc(ride_length))
+
+# filter only rides with same start and end stations - trying to find 360800 removed
+Annual_bike_sales_clean <- Annual_bike_sales_clean %>%
+  anti_join(same_start_and_end)
+
+# remove df
+rm(same_start_and_end)
+
+# create df of rider type, day of week, number of rides, and average duration
+day_of_week_rides <- Annual_bike_sales_clean %>%
+  mutate(weekday = wday(started_at, label=TRUE)) %>%
+  group_by(member_casual, weekday) %>%
+  summarise(number_of_rides = n(), average_duration = mean(ride_length)) %>%
+  arrange(member_casual, weekday)
+
+# create CSV
+write.csv(day_of_week_rides,"day_of_week_rides.csv")
+
+# remove df
+rm(day_of_week_rides)
+
+# create df of monthly data
+monthly_rides_by_ridertype <- Annual_bike_sales_clean %>%
+  select(month, member_casual) %>%
+  add_count(month, member_casual) %>%
+  distinct(month, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
+  arrange(desc(n)) %>%
+  print(n=24)
+
+# create CSV
+write.csv(monthly_rides_by_ridertype,"monthly_rides_by_ridertype.csv")
+
+# remove df
+rm(monthly_rides_by_ridertype)
+
+# create df of hourly data
+hourly_rides_by_ridertype <- Annual_bike_sales_clean %>%
+  select(hour, member_casual) %>%
+  add_count(hour, member_casual) %>%
+  distinct(hour, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
+  arrange(desc(n)) %>%
+  print(n=48)
+
+# create CSV
+write.csv(hourly_rides_by_ridertype,"hourly_rides_by_ridertype.csv")
+
+# remove df
+rm(hourly_rides_by_ridertype)
+
+# create df rideable_type data
+rideable_type <- Annual_bike_sales_clean %>%
+  select(rideable_type, member_casual) %>%
+  add_count(rideable_type, member_casual) %>%
+  distinct(rideable_type, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
+  arrange(desc(n))
+
+# create CSV
+write.csv(rideable_type,"rideable_type.csv")
+
+# remove df
+rm(rideable_type)
+
+# create df top 5 MEMBER start stations
+top_start_member <- Annual_bike_sales_clean %>%
+  select(start_station_name, start_lat, start_lng, member_casual) %>%
+  add_count(start_station_name, member_casual) %>%
+  filter(n>10000, member_casual=="member") %>%
+  distinct(start_station_name, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
+  arrange(desc(n)) %>%
+  slice(1:5)
+
+# create df top 5 CASUAL start stations
+top_start_casual <- Annual_bike_sales_clean %>%
+  select(start_station_name, start_lat, start_lng, member_casual) %>%
+  add_count(start_station_name, member_casual) %>%
+  filter(n>10000, member_casual=="casual") %>%
+  distinct(start_station_name, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
+  arrange(desc(n)) %>%
+  slice(1:5)
+
+# create df combining top start stations for MEMBER and CASUAL
+top_start <- bind_rows(top_start_member, top_start_casual) %>%
+  arrange(desc(n))
+
+# create CSV
+write.csv(top_start,"top_start.csv")
+
+# remove df
+rm(top_start_member)
+
+# remove df
+rm(top_start_casual)
+
+# remove df
+rm(top_start)
+
+# create df top 5 MEMBER end stations
+top_end_member <- Annual_bike_sales_clean %>%
+  select(end_station_name, end_lat, end_lng, member_casual) %>%
+  add_count(end_station_name, member_casual) %>%
+  filter(n>10000, member_casual=="member") %>%
+  distinct(end_station_name, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
+  arrange(desc(n)) %>%
+  slice(1:5)
+
+# create df top 5 CASUAL end stations
+top_end_casual <- Annual_bike_sales_clean %>%
+  select(end_station_name, end_lat, end_lng, member_casual) %>%
+  add_count(end_station_name, member_casual) %>%
+  filter(n>10000, member_casual=="casual") %>%
+  distinct(end_station_name, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
+  arrange(desc(n)) %>%
+  slice(1:5)
+
+# create df combining top end stations MEMBER and CASUAL
+top_end <- bind_rows(top_end_member, top_end_casual) %>%
+  arrange(desc(n))
+
+# create CSV
+write.csv(top_end,"top_end.csv")
+
+# remove df
+rm(top_end_member)
+
+# remove df
+rm(top_end_casual)
+
+# remove df
+rm(top_end)
+
+# create df for MEMBER round trip
+top_round_member <- Annual_bike_sales_clean %>%
+  filter(start_station_name==end_station_name) %>%
+  select(start_station_name, end_station_name, start_lat, start_lng, member_casual) %>%
+  add_count(start_station_name, end_station_name, member_casual) %>%
+  filter(member_casual=="member") %>%
+  distinct(start_station_name, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
+  arrange(desc(n)) %>%
+  slice(1:5)
+
+# create df for CASUAL round trip
+top_round_casual <- Annual_bike_sales_clean %>%
+  filter(start_station_name==end_station_name) %>%
+  select(start_station_name, end_station_name, start_lat, start_lng, member_casual) %>%
+  add_count(start_station_name, end_station_name, member_casual) %>%
+  filter(member_casual=="casual") %>%
+  distinct(start_station_name, n, .keep_all = TRUE) %>% # choose specific columns you want to perform distinct on
+  arrange(desc(n)) %>%
+  slice(1:5)
+
+# combining round trip member and casual data sets
+top_round <- bind_rows(top_round_member, top_round_casual) %>%
+  arrange(desc(n))
+
+# create CSV
+write.csv(top_round,"top_round.csv")
+
+# remove df
+rm(top_round_member)
+
+# remove df
+rm(top_round_casual)
+
+# remove df
+rm(top_round)
+
+# remove main df
+rm(Annual_bike_sales_clean)
