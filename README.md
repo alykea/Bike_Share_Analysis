@@ -9,4 +9,6 @@ Find my code in R [here](https://github.com/alykea/Bike_Share_Analysis/blob/main
 
 Find the preview in [Markdown](https://github.com/alykea/Bike_Share_Analysis/blob/main/bike_share_analysis.md).
 
+The PowerPoint Presentation is [here](https://github.com/alykea/Bike_Share_Analysis/blob/main/bike_share_analysis_files/Bike_Share_Analysis.pdf);
+
 Please enjoy.
