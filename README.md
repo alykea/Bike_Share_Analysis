@@ -1,4 +1,4 @@
-#Bike Share Analysis Case Study
+# Bike Share Analysis Case Study
 <p>
 
 This dataset is from [divvy](https://divvy-tripdata.s3.amazonaws.com/index.html). It has been made publicly available by Motivate International Inc. under this [license](https://ride.divvybikes.com/data-license-agreement).
