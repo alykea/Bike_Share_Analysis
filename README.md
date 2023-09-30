@@ -11,4 +11,6 @@ Find the preview in [Markdown](https://github.com/alykea/Bike_Share_Analysis/blo
 
 Here is the [PowerPoint Presentation](https://github.com/alykea/Bike_Share_Analysis/blob/main/bike_share_analysis_files/Bike_Share_Analysis.pdf).
 
+For fun, I also visualized in [Tableau](https://public.tableau.com/shared/RJMNKJR9D?:display_count=n&:origin=viz_share_link).
+
 Please enjoy.
